@@ -13,4 +13,7 @@ function isEmpty(guess) {
             console.log(guess, typeof guess);
         });
         
-     
+document.querySelector('.trbtn').addEventListener('click', function () {
+    const va = (document.querySelector('.trbtn').value);
+    console.log(va, typeof va);
+});

@@ -12,7 +12,6 @@
   h1 {
     font-size: 37px;
     text-align: center;
-
     
   }
   h3{
@@ -25,8 +24,11 @@
 
 
   #photoframe{
-    width: 220px;
-    height: 180px;
+    /* width: 220px;
+    height: 180px; */
+     width: 150px;
+    height: 100px; 
+    
     
   } 
 
@@ -36,10 +38,19 @@
   } 
   #description{
     text-align:end ;
-    font-size: medium;
-    
+    font-size: medium;    
   }
+  #elements_buttons{
+    font-weight:bold ;
+  }
+  /* #num_objects{
+    object-position: top right;
+    text-align: end;
+  } */
+  /* #allLabels{
+    position: absolute;
 
+  } */
  
   
   /* #upload {

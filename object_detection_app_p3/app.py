@@ -24,6 +24,7 @@ import sys
 import tempfile
 import argparse
 import json
+import re
 
 parser = argparse.ArgumentParser(description='Deploy control element detection app.')
 parser.add_argument("-m", "--model-path", default='my_model', help="Path to model directory.")
@@ -59,7 +60,7 @@ from PIL import Image
 from PIL import ImageDraw
 import tensorflow as tf
 from utils import label_map_util
-from werkzeug.datastructures import CombinedMultiDict
+from werkzeug.datastructures import CombinedMultiDict, FileStorage
 from wtforms import Form
 from wtforms import ValidationError
 from category import Category
@@ -71,8 +72,8 @@ with open(f"{BASE_DIR}/category_description.json", 'r') as details:
 tf.gfile = tf.io.gfile
 
 
-
 app = Flask(__name__, static_url_path='/static')
+    
 
 
 
@@ -106,6 +107,7 @@ class PhotoForm(Form):
 
 
 class ObjectDetector(object):
+  
 
   def __init__(self):
 
@@ -131,15 +133,29 @@ class ObjectDetector(object):
     input_tensor = tf.convert_to_tensor(image_np)
     input_tensor = input_tensor[tf.newaxis,...]
     output_dict = self.model(input_tensor)
-
     num_detections = int(output_dict.pop('num_detections'))
     output_dict = {key:value[0, :num_detections].numpy() 
                    for key,value in output_dict.items()}
     boxes = output_dict['detection_boxes']
     classes = output_dict['detection_classes'].astype(np.int64)
     scores = output_dict['detection_scores']
-   
     return boxes, scores, classes, num_detections
+
+
+def find_detections_from_xml(image_name):
+  object_counter = 0
+  pat = '<object>'
+  xml_dir = f"{BASE_DIR}/annotations"
+  xml_file = image_name.split('.')[0]+'.xml'
+  xml_path = f"{xml_dir}/{xml_file}"
+  if os.path.isfile(xml_path):
+    with open(xml_path, 'r') as label_file:
+      for line in label_file:
+        if pat in line:
+          object_counter += 1
+    return object_counter
+  else:
+    return False
 
 
 def draw_bounding_box_on_image(image, box, color='red', thickness=4):
@@ -163,17 +179,21 @@ def encode_image(image):
 def detect_objects(image_path):
   image = Image.open(image_path).convert('RGB')
   boxes, scores, classes, num_detections = client.detect(image)
-  image.thumbnail((860, 860), Image.ANTIALIAS)
-
+  global NUMOFDETECTIONS
+  
+  image.thumbnail((640, 640), Image.ANTIALIAS)
   new_images = {}
+  counter=0
   for i in range(num_detections):
     if scores[i] < args.threshold : continue
     cls = classes[i]
+    counter+=1
     if cls not in new_images.keys():
       new_images[cls] = image.copy()
     draw_bounding_box_on_image(new_images[cls], boxes[i],
                                thickness=int(scores[i]*10)-4)
-
+    
+  NUMOFDETECTIONS=counter
   results = []
   original_category = Category('original', encode_image(image.copy()))
   results.append(original_category)
@@ -183,7 +203,6 @@ def detect_objects(image_path):
     new_category = Category(name, encode_image(new_image))
     new_category.description = category_description.get(name)
     results.append(new_category)
-    # result[category] = encode_image(new_image)
   
   return results
 
@@ -202,13 +221,17 @@ def post():
       form.input_photo.data.save(temp)
       temp.flush()
       result = detect_objects(temp.name)
+    original_file = request.files.get('input_photo').filename
+    num_objects = find_detections_from_xml(original_file)
+    print(f"num_objects: {num_objects}")
+    global NUMOFDETECTIONS
+    num_detections=NUMOFDETECTIONS
+    NUMOFDETECTIONS=0
 
-      # for res in result:
-      #   print(f"name: {res.name}, details: {res.description}")
-
+    
     photo_form = PhotoForm(request.form)
     return render_template('upload.html',
-                           photo_form=photo_form, result=result)
+                           photo_form=photo_form, result=result,num_objects=num_objects,num_detections=num_detections)
   else:
     return redirect(url_for('upload'))
 
@@ -225,7 +248,7 @@ def trsvalue():
 
 
 client = ObjectDetector()
-
+NUMOFDETECTIONS=0
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0', port=80, debug=False)
