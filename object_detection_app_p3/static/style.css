@@ -40,9 +40,49 @@
     text-align:end ;
     font-size: medium;    
   }
-  #elements_buttons{
-    font-weight:bold ;
-  }
+  /* #num_objects{
+    font-weight:bold;
+   
+    float:;
+  } */
+
+  #num_objects{
+      position: absolute;
+      top: 150px;
+      font-weight: bold;
+
+ }   
+    /* #num_objects{
+    position: fixed;
+    bottom: 160;
+    right: 100;
+    width: 300px;
+    font-weight:bold;
+
+  } */
+
+  #container{
+    
+      position: relative;
+  }  
+
+  #upl{
+    float: inline-start; 
+
+ } 
+  #thr{
+    position: absolute;
+    top: 52px;
+    right: 0px;
+
+
+   
+  } 
+  /* #numOfLabeled{
+    font-weight:bold;
+    text-align:end;
+
+  } */
   /* #num_objects{
     object-position: top right;
     text-align: end;
