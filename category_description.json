@@ -23,7 +23,7 @@
     "mute_button" : "When pressed, this button mutes the radio/media system.",
     "radio" : "The vehicle's radio, could be operated by adjacent control elements.",
     "radio_button" : "Buttons used for adjusting the radio station favorites and quickly swapping between them.",
-    "radio_dial" : "The radio dial regulates the AM/FM station or the volume lever of the radio system.",
+    "radio_dial" : "The radio dial regulates the AM/FM station or the volume level of the radio system.",
     "radio_switch" : "A switch used for tunring radio setting on/off.",
     "rpm_meter" : "Displays the current number of rounds-per-minute the engine goes through",
     "sd_slot" : "A slot to place a memory card to be used by the radio system",

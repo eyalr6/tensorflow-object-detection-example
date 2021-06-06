@@ -16,6 +16,14 @@
         target = document.getElementById("photo");
         target.src = img;
       }
+      function compareNumOfObj(numDetect,numXml){
+      
+        target = document.getElementById("numOfDetected");
+        target.innerHTML = numDetect;
+        target = document.getElementById("numOfLabeled");
+        target.innerHTML = numXml;
+
+      }
 
       function WaitDisplay() {
         target = document.getElementById("result");
@@ -36,22 +44,34 @@
     <h1>Control element detection for vehicles</h1>
     <h3>Allow us to help you find more information about your vehicle!</h3>
     <h3>Upload a color photo file of your vehicle's dashboard.</h3>
-    <div>
+    <div id="container">
+      <div id="upl">
       <form id="upload" method=post action={{ url_for('post') }} enctype="multipart/form-data">
         {{ render_field(photo_form.input_photo) }}
-        <p><input type="button" onclick="WaitDisplay();" value="Upload"></p>
+        <p><input type="button" class="trbtn" onclick="WaitDisplay();" value="Upload"></p>
+        <!-- <p><button class="trbtn" onclick="WaitDisplay();">Upload</button></p> -->
       </form>
+    </div>
+      <div id="thr">
+      <form id="threshold" method=post action={{ url_for('trsvalue') }} enctype="multipart/form-data"> 
+        <label>Detection threshold:</label>
+        <input name="tt" type="number" class="trsVal" placeholder="Enter a value between 0-1" step="0.01" min="0" max="1"><br><br>
+        <button class="sub">Submit</button>
+      </form>
+    </div>
+
+      <div id="num_objects">
+        {% if num_objects %}
+         <div id="numOfDetected" align="left" hspace="10" vspace="10"></div>
+         <div id="numOfLabeled"  align="left" hspace="10" vspace="10"></div>
       
-
+      <a class="elements_buttons" onload="compareNumOfObj('{{num_objects}}','{{ num_detections }}');">Found/Known elements: {{num_detections}}/{{num_objects}} </a>
+      {% endif %}
     
-    <form id="threshold" method=post action={{ url_for('trsvalue') }} enctype="multipart/form-data"> 
-      <label>Detection threshold:</label>
-      <input name="tt" type="number" class="trsVal" placeholder="Enter a value between 0-1" step="0.01" min="0" max="1"><br><br>
-      <button class="sub">Submit</button>
-    </form>
-
-  </div>
-  <br><br>
+    </div>
+    
+  </div> 
+  <br><br><br><br><br><br><br>
   <hr>
     <div id="result">
       {% if result|length > 0 %}
@@ -66,11 +86,25 @@
               <a href="javascript:void(0);" id="allLabels"
                  onclick="ChangePhoto('{{ category.name }}', '{{ category.image }}','{{ category.description }}');">{{ category.name }}</a>
               </br>
+              <!-- <div id="numOfDetected" src="{{ result.length }}" align="right" hspace="10" vspace="10"></div>
+              <div id="numOfLabeled" src="{{num_objects}}" align="left" hspace="10" vspace="10"></div>
+              <a href="javascript:void(0);" onclick="compareNumOfObj('{{result.length}}','{{ num_objects }}');">{{category.name.length}}={{num_objects}}</a> -->
+
             {% endif %}
           {% endfor %}
         </p>
       {% endif %}
     </div>
+    
+    <!-- <div id="num_objects">
+      {% if num_objects %}
+       <div id="numOfDetected" align="right" hspace="10" vspace="10"></div>
+       <div id="numOfLabeled"  align="left" hspace="10" vspace="10"></div>
+    
+    <a href="javascript:void(0);" onclick="compareNumOfObj('{{num_objects}}','{{ num_detections }}');">{{num_objects}},{{num_detections}}</a>
+    {% endif %}
+
+  </div> -->
     <div id="loading" style="display:none">
       <h2>Detecting control elements...</h2>
     </div>

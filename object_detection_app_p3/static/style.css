@@ -12,7 +12,6 @@
   h1 {
     font-size: 37px;
     text-align: center;
-
     
   }
   h3{
@@ -25,8 +24,11 @@
 
 
   #photoframe{
-    width: 220px;
-    height: 180px;
+    /* width: 220px;
+    height: 180px; */
+     width: 150px;
+    height: 100px; 
+    
     
   } 
 
@@ -36,10 +38,59 @@
   } 
   #description{
     text-align:end ;
-    font-size: medium;
-    
+    font-size: medium;    
   }
+  /* #num_objects{
+    font-weight:bold;
+   
+    float:;
+  } */
 
+  #num_objects{
+      position: absolute;
+      top: 150px;
+      font-weight: bold;
+
+ }   
+    /* #num_objects{
+    position: fixed;
+    bottom: 160;
+    right: 100;
+    width: 300px;
+    font-weight:bold;
+
+  } */
+
+  #container{
+    
+      position: relative;
+  }  
+
+  #upl{
+    float: inline-start; 
+
+ } 
+  #thr{
+    position: absolute;
+    top: 52px;
+    right: 0px;
+
+
+   
+  } 
+  /* #numOfLabeled{
+    font-weight:bold;
+    text-align:end;
+
+  } */
+  /* #num_objects{
+    object-position: top right;
+    text-align: end;
+  } */
+  /* #allLabels{
+    position: absolute;
+
+  } */
  
   
   /* #upload {
